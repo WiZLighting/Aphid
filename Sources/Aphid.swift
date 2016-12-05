@@ -33,6 +33,8 @@ open class Aphid {
 
     internal var bound = 2
 
+    internal var config = Config.sharedInstance
+    
     internal let readQueue: DispatchQueue
     internal let writeQueue: DispatchQueue
 
@@ -41,7 +43,8 @@ open class Aphid {
 
         let clientId = !cleanSess && (clientId == "") ? NSUUID().uuidString : clientId
 
-        Config.sharedInstance.setUser(clientId: clientId, username: username, password: password)
+        config.setUser(clientId: clientId, username: username, password: password)
+        config.setBroker(host: host, port: port)
 
         readQueue = DispatchQueue(label: "read queue", attributes: DispatchQueue.Attributes.concurrent)
         writeQueue = DispatchQueue(label: "write queue", attributes: DispatchQueue.Attributes.concurrent)
@@ -60,13 +63,13 @@ open class Aphid {
         
         try socket!.connect(to: config.host, port: config.port)
 
-        requestHandler(packet: ConnectPacket()) {
+        requestHandler(packet: ConnectPacket()) { [weak self] in
             
-            self.startTimer()
+            self?.startTimer()
 
-            self.read()
+            self?.read()
             
-            config.status = .connected
+            self?.config.status = .connected
         }
     }
 
@@ -82,9 +85,9 @@ open class Aphid {
 
         requestHandler(packet: DisconnectPacket()) {
 
-            config.status = .disconnected
+            self.config.status = .disconnected
 
-            sleep(config.quiesce)   // Sleep to allow buffering packets to be sent
+            sleep(self.config.quiesce)   // Sleep to allow buffering packets to be sent
 
             self.socket?.close()
 

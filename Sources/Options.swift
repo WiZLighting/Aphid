@@ -94,7 +94,7 @@ public struct Config {
 
     }
 
-    mutating func addBroker(host: String, port: Int32) {
+    mutating func setBroker(host: String, port: Int32) {
         self.host = host
         self.port = port
     }

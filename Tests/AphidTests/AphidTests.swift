@@ -38,11 +38,15 @@ class AphidTests: XCTestCase, MQTTDelegate {
     weak var expectation: XCTestExpectation!
     weak var disconnectExpectation: XCTestExpectation!
 
+    var host:String = "127.0.0.1"
+    var port:Int32 = 1883
+
     var tokens = [String]()
     
     static var allTests: [(String, (AphidTests) -> () throws -> Void)] {
         return [
             ("testConnect", testConnect),
+            ("testConnectCustomHostPort",testConnectCustomHostPort),
             ("testKeepAlive", testKeepAlive),
             ("testSubscribePublish", testSubscribePublish),
             ("testQosExactlyOnce",testQosExactlyOnce),
@@ -53,7 +57,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
         super.setUp()
 
         let clientId = "Aaron"
-        aphid = Aphid(clientId: clientId)
+        aphid = Aphid(clientId: clientId, host: host, port: port)
 
         aphid.setWill(topic: "lastWillAndTestament/",message: "Client \(clientId) Closed Unexpectedly", willQoS: .atMostOnce, willRetain: false)
 
@@ -75,6 +79,26 @@ class AphidTests: XCTestCase, MQTTDelegate {
         }
     }
 
+    func testConnectCustomHostPort() throws {
+        
+        testCase = "connectCustomHost"
+        disconnectExpectation = expectation(description: "Disconnected")
+        
+        aphid.config.host = "127.0.0.1"
+        aphid.config.port = 1111
+
+        do{
+            try aphid.connect()
+        }catch{
+            disconnectExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 30) {
+            error in
+
+        }
+    }
+    
     func testKeepAlive() throws {
         
         testCase = "ping"
@@ -150,6 +174,12 @@ class AphidTests: XCTestCase, MQTTDelegate {
         if testCase == "connect"  && receivedCount == 0{
             receivedCount += 1
             expectation.fulfill()
+        }
+    }
+
+    func didFailedToConnect(){
+        if testCase == "connectCustomHost"{
+
         }
     }
 
