@@ -73,6 +73,12 @@ open class Aphid {
         }
     }
 
+    public var status:ConnectionStatus{
+        get{
+            return config.status
+        }
+    }
+    
     public func reconnect() {
     }
 

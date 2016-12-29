@@ -167,11 +167,13 @@ class AphidTests: XCTestCase, MQTTDelegate {
     }
     // Protocol Functions
     func didLoseConnection(error: Error?) {
-        disconnectExpectation.fulfill()
+        if aphid.status == .disconnected{
+            disconnectExpectation.fulfill()
+        }
     }
 
     func didConnect() {
-        if testCase == "connect"  && receivedCount == 0{
+        if testCase == "connect"  && receivedCount == 0 && aphid.status == .connected {
             receivedCount += 1
             expectation.fulfill()
         }
