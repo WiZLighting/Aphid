@@ -120,7 +120,7 @@ open class Aphid {
                 self.delegate?.didCompleteDelivery(token: String(publishPacket.identifier))
             }
         }
-        return publishPacket.identifier
+        return String(publishPacket.identifier)
     }
 
     public func subscribe(topic: [String], qoss: [QosType]) {
