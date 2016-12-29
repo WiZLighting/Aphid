@@ -105,7 +105,7 @@ open class Aphid {
         }
     }
 
-    public func publish(topic: String, withMessage message: String, qos: QosType = .atLeastOnce, retain: Bool = false)->UInt16? {
+    public func publish(topic: String, withMessage message: String, qos: QosType = .atLeastOnce, retain: Bool = false)->String? {
 
         guard topic.matches(pattern: config.publishPattern) else {
             print(Errors.invalidTopicName)
