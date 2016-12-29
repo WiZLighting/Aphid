@@ -105,11 +105,11 @@ open class Aphid {
         }
     }
 
-    public func publish(topic: String, withMessage message: String, qos: QosType = .atLeastOnce, retain: Bool = false) {
+    public func publish(topic: String, withMessage message: String, qos: QosType = .atLeastOnce, retain: Bool = false)->UInt16? {
 
         guard topic.matches(pattern: config.publishPattern) else {
             print(Errors.invalidTopicName)
-            return
+            return nil
         }
 
         let publishPacket = PublishPacket(topic: topic, message: message, dup: false, qos: qos, willRetain: retain)
@@ -120,6 +120,7 @@ open class Aphid {
                 self.delegate?.didCompleteDelivery(token: String(publishPacket.identifier))
             }
         }
+        return publishPacket.identifier
     }
 
     public func subscribe(topic: [String], qoss: [QosType]) {

@@ -124,7 +124,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
 
         aphid.subscribe(topic: [topic], qoss: [.atMostOnce])
 
-        aphid.publish(topic: topic, withMessage: message, qos: QosType.exactlyOnce)
+        let _ = aphid.publish(topic: topic, withMessage: message, qos: QosType.exactlyOnce)
 
         waitForExpectations(timeout: 60) {
             error in
@@ -143,7 +143,7 @@ class AphidTests: XCTestCase, MQTTDelegate {
 
         aphid.subscribe(topic: [topic], qoss: [.atMostOnce])
 
-        aphid.publish(topic: topic, withMessage: message, qos: .exactlyOnce)
+        let _ = aphid.publish(topic: topic, withMessage: message, qos: .exactlyOnce)
 
         waitForExpectations(timeout: 30) {
             error in
